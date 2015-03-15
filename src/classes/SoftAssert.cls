@@ -39,6 +39,46 @@ public class SoftAssert {
 		assertInternal(condition, opt_msg);
 	}
 
+	/**
+	 * Asserts that the first two arguments are the same.
+	 * If not, a failure is added to the list, to be reported on assertAll.
+	 * @param expected Specifies the expected value.
+	 * @param actual   Specifies the actual value.
+	 */
+	public static void assertEquals(Object expected, Object actual) {
+		Boolean areEqual = compareObjects(expected, actual);
+		if (!areEqual) {
+			assertInternal(false, ASSERTION_FAILED + ': '
+				+ String.format('Expected: {0}, Actual: {1}',
+					new String[]{
+						String.valueOf(expected),
+						String.valueOf(actual)
+					})
+				);
+		}
+	}
+
+	/**
+	 * Asserts that the first two arguments are the same.
+	 * If not, a failure is added to the list, to be reported on assertAll.
+	 * @param expected Specifies the expected value.
+	 * @param actual   Specifies the actual value.
+	 * @param opt_msg  Custom message returned as part of the error message.
+	 */
+	public static void assertEquals(Object expected, Object actual, Object opt_msg) {
+		Boolean areEqual = compareObjects(expected, actual);
+		if (!areEqual) {
+			assertInternal(false, ASSERTION_FAILED + ': '
+				+ (opt_msg != null ? String.valueOf(opt_msg) + ': ' : '')
+				+ String.format('Expected: {0}, Actual: {1}',
+					new String[]{
+						String.valueOf(expected),
+						String.valueOf(actual)
+					})
+				);
+		}
+	}
+
 	private static void assertInternal(Boolean condition, Object opt_msg) {
 		if (!condition) {
 			if (opt_msg == null) {
@@ -46,6 +86,18 @@ public class SoftAssert {
 			}
 			failures.add(String.valueOf(opt_msg) + '\n' + getStackTrace());
 		}
+	}
+
+	private static Boolean compareObjects(Object expected, Object actual) {
+		if (expected == null && actual == null) return true;
+		if (expected == null || actual == null) return false;
+		if (expected instanceof String && actual instanceof String) {
+			// Convert to String, so that equals is case sensitive
+			String expectedString = (String) expected;
+			String actualString   = (String) actual;
+			return expectedString.equals(actualString);
+		}
+		return expected.equals(actual);
 	}
 
 	public static void assertAll() {
