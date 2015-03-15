@@ -79,6 +79,38 @@ public class SoftAssert {
 		}
 	}
 
+	/**
+	 * Asserts that the first two arguments are not the same.
+	 * If they are, a failure is added to the list, to be reported on assertAll.
+	 * @param expected Specifies the expected value.
+	 * @param actual   Specifies the actual value.
+	 */
+	public static void assertNotEquals(Object expected, Object actual) {
+		Boolean areEqual = compareObjects(expected, actual);
+		if (areEqual) {
+			assertInternal(false, ASSERTION_FAILED + ': '
+				+ 'Same value: ' + String.valueOf(expected)
+				);
+		}
+	}
+
+	/**
+	 * Asserts that the first two arguments are not the same.
+	 * If they are, a failure is added to the list, to be reported on assertAll.
+	 * @param expected Specifies the expected value.
+	 * @param actual   Specifies the actual value.
+	 * @param opt_msg  Custom message returned as part of the error message.
+	 */
+	public static void assertNotEquals(Object expected, Object actual, Object opt_msg) {
+		Boolean areEqual = compareObjects(expected, actual);
+		if (areEqual) {
+			assertInternal(false, ASSERTION_FAILED + ': '
+				+ (opt_msg != null ? String.valueOf(opt_msg) + ': ' : '')
+				+ 'Same value: ' + String.valueOf(expected)
+				);
+		}
+	}
+
 	private static void assertInternal(Boolean condition, Object opt_msg) {
 		if (!condition) {
 			if (opt_msg == null) {
