@@ -3,6 +3,7 @@
     <fullName>SoftAssert</fullName>
     <types>
         <members>SoftAssert</members>
+        <members>SoftAssertTest</members>
         <name>ApexClass</name>
     </types>
     <version>33.0</version>

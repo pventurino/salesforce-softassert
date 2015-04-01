@@ -25,8 +25,8 @@ public class SoftAssert {
 	 * If not, a failure is added to the list, to be reported on assertAll.
 	 * @param condition Specifies the condition to test.
 	 */
-	public static void assert(Boolean condition) {
-		assertInternal(condition, ASSERTION_FAILED);
+	public static Boolean assert(Boolean condition) {
+		return assertInternal(condition, ASSERTION_FAILED);
 	}
 
 	/**
@@ -35,8 +35,8 @@ public class SoftAssert {
 	 * @param condition Specifies the condition to test.
 	 * @param opt_msg   Custom message returned as part of the error message.
 	 */
-	public static void assert(Boolean condition, Object opt_msg) {
-		assertInternal(condition, opt_msg);
+	public static Boolean assert(Boolean condition, Object opt_msg) {
+		return assertInternal(condition, opt_msg);
 	}
 
 	/**
@@ -45,10 +45,10 @@ public class SoftAssert {
 	 * @param expected Specifies the expected value.
 	 * @param actual   Specifies the actual value.
 	 */
-	public static void assertEquals(Object expected, Object actual) {
+	public static Boolean assertEquals(Object expected, Object actual) {
 		Boolean areEqual = compareObjects(expected, actual);
 		if (!areEqual) {
-			assertInternal(false, ASSERTION_FAILED + ': '
+			return assertInternal(false, ASSERTION_FAILED + ': '
 				+ String.format('Expected: {0}, Actual: {1}',
 					new String[]{
 						String.valueOf(expected),
@@ -56,6 +56,7 @@ public class SoftAssert {
 					})
 				);
 		}
+		return areEqual;
 	}
 
 	/**
@@ -65,10 +66,10 @@ public class SoftAssert {
 	 * @param actual   Specifies the actual value.
 	 * @param opt_msg  Custom message returned as part of the error message.
 	 */
-	public static void assertEquals(Object expected, Object actual, Object opt_msg) {
+	public static Boolean assertEquals(Object expected, Object actual, Object opt_msg) {
 		Boolean areEqual = compareObjects(expected, actual);
 		if (!areEqual) {
-			assertInternal(false, ASSERTION_FAILED + ': '
+			return assertInternal(false, ASSERTION_FAILED + ': '
 				+ (opt_msg != null ? String.valueOf(opt_msg) + ': ' : '')
 				+ String.format('Expected: {0}, Actual: {1}',
 					new String[]{
@@ -77,6 +78,7 @@ public class SoftAssert {
 					})
 				);
 		}
+		return areEqual;
 	}
 
 	/**
@@ -85,13 +87,14 @@ public class SoftAssert {
 	 * @param expected Specifies the expected value.
 	 * @param actual   Specifies the actual value.
 	 */
-	public static void assertNotEquals(Object expected, Object actual) {
+	public static Boolean assertNotEquals(Object expected, Object actual) {
 		Boolean areEqual = compareObjects(expected, actual);
 		if (areEqual) {
-			assertInternal(false, ASSERTION_FAILED + ': '
+			return assertInternal(false, ASSERTION_FAILED + ': '
 				+ 'Same value: ' + String.valueOf(expected)
 				);
 		}
+		return !areEqual;
 	}
 
 	/**
@@ -101,23 +104,25 @@ public class SoftAssert {
 	 * @param actual   Specifies the actual value.
 	 * @param opt_msg  Custom message returned as part of the error message.
 	 */
-	public static void assertNotEquals(Object expected, Object actual, Object opt_msg) {
+	public static Boolean assertNotEquals(Object expected, Object actual, Object opt_msg) {
 		Boolean areEqual = compareObjects(expected, actual);
 		if (areEqual) {
-			assertInternal(false, ASSERTION_FAILED + ': '
+			return assertInternal(false, ASSERTION_FAILED + ': '
 				+ (opt_msg != null ? String.valueOf(opt_msg) + ': ' : '')
 				+ 'Same value: ' + String.valueOf(expected)
 				);
 		}
+		return !areEqual;
 	}
 
-	private static void assertInternal(Boolean condition, Object opt_msg) {
+	private static Boolean assertInternal(Boolean condition, Object opt_msg) {
 		if (!condition) {
 			if (opt_msg == null) {
 				opt_msg = ASSERTION_FAILED;
 			}
 			failures.add(String.valueOf(opt_msg) + '\n' + getStackTrace());
 		}
+		return condition;
 	}
 
 	private static Boolean compareObjects(Object expected, Object actual) {
