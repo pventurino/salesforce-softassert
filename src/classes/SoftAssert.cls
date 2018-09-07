@@ -115,6 +115,40 @@ public class SoftAssert {
 		return !areEqual;
 	}
 
+	/**
+	 * Asserts that the actual datetime is before the expected datetime
+	 * @param expected The expected datetime
+	 * @param actual   The actual datetime
+	 * @param opt_msg  Custom message returned as part of the error message.
+	 */
+	public static Boolean assertBefore(Datetime expected, Datetime actual, Object opt_msg) {
+		return assertInternal(expected > actual, ASSERTION_FAILED + ': '
+			+ (opt_msg != null ? String.valueOf(opt_msg) + ': ' : '')
+			+ String.format('Actual ({0}) not before Expected ({1})',
+				new String[]{
+					String.valueOf(actual),
+					String.valueOf(expected)
+				})
+			);
+	}
+
+	/**
+	 * Asserts that the actual datetime is after the expected datetime
+	 * @param expected The expected datetime
+	 * @param actual   The actual datetime
+	 * @param opt_msg  Custom message returned as part of the error message.
+	 */
+	public static Boolean assertAfter(Datetime expected, Datetime actual, Object opt_msg) {
+		return assertInternal(expected < actual, ASSERTION_FAILED + ': '
+			+ (opt_msg != null ? String.valueOf(opt_msg) + ': ' : '')
+			+ String.format('Actual ({0}) not after Expected ({1})',
+				new String[]{
+					String.valueOf(actual),
+					String.valueOf(expected)
+				})
+			);
+	}
+
 	private static Boolean assertInternal(Boolean condition, Object opt_msg) {
 		if (!condition) {
 			if (opt_msg == null) {
