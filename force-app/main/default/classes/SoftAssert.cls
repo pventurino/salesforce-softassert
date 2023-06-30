@@ -1,5 +1,5 @@
 /**
- * Provides an interface to assertion similiar to those in System class.
+ * Provides an interface to assertion similiar to those in System.Assert class.
  *
  * These assertions will not fail on the spot, and allow the developer to
  * perform several assertions in the same test method.
@@ -15,17 +15,22 @@
 @isTest
 public class SoftAssert {
 
-	private static final String ASSERTION_FAILED = 'Assertion Failed';
+	private static final SoftAssert INSTANCE = new SoftAssert();
+	public static SoftAssert getInstance() {
+		return INSTANCE;
+	}
+
+	private final String ASSERTION_FAILED = 'Assertion Failed';
 
 	// Contains all assertions that failed so far
-	private static List<String> failures = new List<String>();
+	private List<String> failures = new List<String>();
 
 	/**
 	 * Asserts that the specified condition is true.
 	 * If not, a failure is added to the list, to be reported on assertAll.
 	 * @param condition Specifies the condition to test.
 	 */
-	public static Boolean assert(Boolean condition) {
+	public Boolean assert(Boolean condition) {
 		return assertInternal(condition, ASSERTION_FAILED);
 	}
 
@@ -35,7 +40,7 @@ public class SoftAssert {
 	 * @param condition Specifies the condition to test.
 	 * @param opt_msg   Custom message returned as part of the error message.
 	 */
-	public static Boolean assert(Boolean condition, Object opt_msg) {
+	public Boolean assert(Boolean condition, Object opt_msg) {
 		return assertInternal(condition, opt_msg);
 	}
 
@@ -45,7 +50,7 @@ public class SoftAssert {
 	 * @param expected Specifies the expected value.
 	 * @param actual   Specifies the actual value.
 	 */
-	public static Boolean assertEquals(Object expected, Object actual) {
+	public Boolean assertEquals(Object expected, Object actual) {
 		Boolean areEqual = compareObjects(expected, actual);
 		if (!areEqual) {
 			return assertInternal(false, ASSERTION_FAILED + ': '
@@ -66,7 +71,7 @@ public class SoftAssert {
 	 * @param actual   Specifies the actual value.
 	 * @param opt_msg  Custom message returned as part of the error message.
 	 */
-	public static Boolean assertEquals(Object expected, Object actual, Object opt_msg) {
+	public Boolean assertEquals(Object expected, Object actual, Object opt_msg) {
 		Boolean areEqual = compareObjects(expected, actual);
 		if (!areEqual) {
 			return assertInternal(false, ASSERTION_FAILED + ': '
@@ -87,7 +92,7 @@ public class SoftAssert {
 	 * @param expected Specifies the expected value.
 	 * @param actual   Specifies the actual value.
 	 */
-	public static Boolean assertNotEquals(Object expected, Object actual) {
+	public Boolean assertNotEquals(Object expected, Object actual) {
 		Boolean areEqual = compareObjects(expected, actual);
 		if (areEqual) {
 			return assertInternal(false, ASSERTION_FAILED + ': '
@@ -104,7 +109,7 @@ public class SoftAssert {
 	 * @param actual   Specifies the actual value.
 	 * @param opt_msg  Custom message returned as part of the error message.
 	 */
-	public static Boolean assertNotEquals(Object expected, Object actual, Object opt_msg) {
+	public Boolean assertNotEquals(Object expected, Object actual, Object opt_msg) {
 		Boolean areEqual = compareObjects(expected, actual);
 		if (areEqual) {
 			return assertInternal(false, ASSERTION_FAILED + ': '
@@ -115,7 +120,7 @@ public class SoftAssert {
 		return !areEqual;
 	}
 
-	private static Boolean assertInternal(Boolean condition, Object opt_msg) {
+	private Boolean assertInternal(Boolean condition, Object opt_msg) {
 		if (!condition) {
 			if (opt_msg == null) {
 				opt_msg = ASSERTION_FAILED;
@@ -125,7 +130,7 @@ public class SoftAssert {
 		return condition;
 	}
 
-	private static Boolean compareObjects(Object expected, Object actual) {
+	private Boolean compareObjects(Object expected, Object actual) {
 		if (expected == null && actual == null) return true;
 		if (expected == null || actual == null) return false;
 		if (expected instanceof String && actual instanceof String) {
@@ -137,7 +142,7 @@ public class SoftAssert {
 		return expected.equals(actual);
 	}
 
-	public static void assertAll() {
+	public void assertAll() {
 		if (!failures.isEmpty()) {
 			System.assert(false,
 				failures.size() + ' assertions failed:\n\n'
@@ -150,7 +155,7 @@ public class SoftAssert {
 	 * Returns the stack trace up to calling the assertion method.
 	 * @return a string containing each call on the stack trace in a separate line.
 	 */
-	private static String getStackTrace() {
+	private String getStackTrace() {
 		Exception ex = new DummyException();
 		return ex.getStackTraceString()
 			.replaceFirst('^(Class\\.SoftAssert\\..*\n)+', '');
