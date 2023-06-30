@@ -153,9 +153,7 @@ public class SoftAssert {
 	private static String getStackTrace() {
 		Exception ex = new DummyException();
 		return ex.getStackTraceString()
-			.subStringAfter('\n')
-			.subStringAfter('\n')
-			.subStringAfter('\n');
+			.replaceFirst('^(Class\\.SoftAssert\\..*\n)+', '');
 	}
 
 	/**
