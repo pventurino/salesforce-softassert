@@ -58,6 +58,25 @@ public class SoftAssert {
 
   /**
   /**
+   * Asserts that the value isn’t null.
+   */
+  public Boolean isNotNull(Object value, String msg) {
+    return value == null
+      ? fail(ASSERTION_FAILED + ': Instance expected to be a non null value: ' + msg)
+      : true;
+  }
+
+  /**
+   * Asserts that the value is null.
+   */
+  public Boolean isNull(Object value, String msg) {
+    return value != null
+      ? fail(ASSERTION_FAILED + ': Nullable object asserted with non null value: ' + msg)
+      : true;
+  }
+
+  /**
+  /**
    * Asserts that the specified condition is true.
    * If not, a failure is added to the list, to be reported on assertAll.
    * @param condition Specifies the condition to test.

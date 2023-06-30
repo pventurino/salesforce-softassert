@@ -49,6 +49,87 @@ public class SoftAssertTest {
   }
 
   @isTest
+  static void testIsAndNotNull() {
+    Object[][] cases = new Object[][]{
+      new Object[]{true, assert.isNull(null, 'msg'), 'isNull(null)'},
+      new Object[]{false, assert.isNull(2, 'msg'), 'isNull(2)'},
+      new Object[]{false, assert.isNotNull(null, 'msg'), 'isNotNull(null)'},
+      new Object[]{true, assert.isNotNull(2, 'msg'), 'isNotNull(2)'}
+    };
+
+    String result = '';
+    for (Object[] c : cases) {
+      if (c[0] != c[1]) {
+        result += '\n  ' + c[2] + ': Expected: ' + c[0] + ', Actual: ' + c[1];
+      }
+    }
+
+    System.Assert.isTrue(result == '', result);
+  }
+
+  @isTest
+  static void testIsTrueAndIsFalse() {
+    Object[][] cases = new Object[][]{
+      new Object[]{true, assert.isTrue(true, 'msg'), 'isTrue(true)'},
+      new Object[]{false, assert.isTrue(false, 'msg'), 'isTrue(false)'},
+      new Object[]{false, assert.isTrue(null, 'msg'), 'isTrue(null)'},
+      new Object[]{false, assert.isFalse(true, 'msg'), 'isFalse(true)'},
+      new Object[]{true, assert.isFalse(false, 'msg'), 'isFalse(false)'},
+      new Object[]{false, assert.isFalse(null, 'msg'), 'isFalse(null)'}
+    };
+
+    String result = '';
+    for (Object[] c : cases) {
+      if (c[0] != c[1]) {
+        result += '\n  ' + c[2] + ': Expected: ' + c[0] + ', Actual: ' + c[1];
+      }
+    }
+
+    System.Assert.isTrue(result == '', result);
+  }
+
+  @IsTest
+  static void testMessages() {
+    assert.areEqual(1, 2);
+    assert.areEqual(1, 2, 'message');
+    assert.areNotEqual(1, 1);
+    assert.areNotEqual(1, 1, 'message');
+    assert.fail();
+    assert.fail('message');
+    assert.isFalse(true);
+    assert.isFalse(true, 'message');
+    assert.isNotNull(null);
+    assert.isNotNull(null, 'message');
+    assert.isNull(1);
+    assert.isNull(1, 'message');
+    assert.isTrue(false);
+    assert.isTrue(false, 'message');
+    
+    final Integer FIRST_LINE = 93;
+    Integer line = FIRST_LINE; 
+    String[] expected = new String[]{
+      '14 failures',
+      '1. Expected: 1, Actual: 2 [' + (line++) + ':1]',
+      '2. message: Expected: 1, Actual: 2 [' + (line++) + ':1]',
+      '3. Same value: 1 [' + (line++) + ':1]',
+      '4. message: Same value: 1 [' + (line++) + ':1]',
+      '5. Assertion Failed [' + (line++) + ':1]',
+      '6. message [' + (line++) + ':1]',
+      '7. Value is not False [' + (line++) + ':1]',
+      '8. Value is not False: message [' + (line++) + ':1]',
+      '9. Instance expected to be a non null value [' + (line++) + ':1]',
+      '10. Instance expected to be a non null value: message [' + (line++) + ':1]',
+      '11. Nullable object asserted with non null value [' + (line++) + ':1]',
+      '12. Nullable object asserted with non null value: message [' + (line++) + ':1]',
+      '13. Value is not True [' + (line++) + ':1]',
+      '14. Value is not True: message [' + (line++) + ':1]'
+    };
+    String[] actual = assert.getFailureMessage().split('\n');
+    for(Integer i=0; i<expected.size(); i++) {
+      System.Assert.areEqual(expected[i], actual[i], 'Line ' + i);
+    }
+  }
+
   //-------
   // Assert
   //-------
