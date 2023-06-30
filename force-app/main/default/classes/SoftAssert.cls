@@ -57,6 +57,14 @@ public class SoftAssert {
   }
 
   /**
+   * Asserts that the specified condition is `false`.
+   */
+  public Boolean isFalse(Boolean condition, String msg) {
+    return condition != false
+      ? fail(ASSERTION_FAILED + ': ' + msg)
+      : true;
+  }
+
   /**
    * Asserts that the value isn’t null.
    */
@@ -76,6 +84,18 @@ public class SoftAssert {
   }
 
   /**
+   * Asserts that the specified condition is `true`.
+   */
+  public Boolean isTrue(Boolean condition, String msg) {
+    return condition != true
+      ? fail(ASSERTION_FAILED + ': ' + msg)
+      : true;
+  }
+
+  // =========================
+  // OLD SYSTEM.ASSERT METHODS
+  // =========================
+
   /**
    * Asserts that the specified condition is true.
    * If not, a failure is added to the list, to be reported on assertAll.
