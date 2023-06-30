@@ -25,6 +25,38 @@ public class SoftAssert {
   // Contains all assertions that failed so far
   private List<String> failures = new List<String>();
 
+  // =====================
+  // SYSTEM.ASSERT METHODS
+  // =====================
+
+  /**
+   * Asserts that the first two arguments are the same.
+   */
+  public Boolean areEqual(Object expected, Object actual, String msg) {
+    // return (expected == null ? actual != null : expected.equals(actual) == false)
+    return compareObjects(expected, actual) == false
+      ? fail(msg + ': Expected: ' + expected + ', Actual: ' + actual)
+      : true;
+  }
+
+  /**
+   * Asserts that the first two arguments aren’t the same.
+   */
+  public Boolean areNotEqual(Object expected, Object actual, String msg) {
+    return compareObjects(expected, actual) == true
+      ? fail(msg + ': Expected: ' + expected + ', Actual: ' + actual)
+      : true;
+  }
+
+  /**
+   * Adds the specified message as a failure to the list.
+   */
+  public Boolean fail(String msg) {
+    failures.add(msg + '\n' + getStackTrace());
+    return false;
+  }
+
+  /**
   /**
    * Asserts that the specified condition is true.
    * If not, a failure is added to the list, to be reported on assertAll.
