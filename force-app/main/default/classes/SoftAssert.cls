@@ -32,64 +32,113 @@ public class SoftAssert {
   /**
    * Asserts that the first two arguments are the same.
    */
+  public Boolean areEqual(Object expected, Object actual) {
+    return areEqual(expected, actual, null);
+  }
+
+  /**
+   * Asserts that the first two arguments are the same.
+   */
   public Boolean areEqual(Object expected, Object actual, String msg) {
-    // return (expected == null ? actual != null : expected.equals(actual) == false)
-    return compareObjects(expected, actual) == false
-      ? fail(msg + ': Expected: ' + expected + ', Actual: ' + actual)
-      : true;
+    return compareObjects(expected, actual) == true ||
+      fail(ASSERTION_FAILED
+        + (msg != null ? ': ' + msg : '')
+        + ': Expected: ' + expected
+        + ', Actual: ' + actual);
+  }
+
+  /**
+   * Asserts that the first two arguments aren’t the same.
+   */
+  public Boolean areNotEqual(Object expected, Object actual) {
+    return assertNotEquals(expected, actual, null);
   }
 
   /**
    * Asserts that the first two arguments aren’t the same.
    */
   public Boolean areNotEqual(Object expected, Object actual, String msg) {
-    return compareObjects(expected, actual) == true
-      ? fail(msg + ': Expected: ' + expected + ', Actual: ' + actual)
-      : true;
+    return compareObjects(expected, actual) == false ||
+      fail(ASSERTION_FAILED
+        + (msg != null ? ': ' + msg : '')
+        + ': Same value: ' + actual);
+  }
+
+  /**
+   * Adds the specified message as a failure to the list.
+   */
+  public Boolean fail() {
+    return fail(null);
   }
 
   /**
    * Adds the specified message as a failure to the list.
    */
   public Boolean fail(String msg) {
-    failures.add(msg + '\n' + getStackTrace());
+    failures.add(ASSERTION_FAILED
+      + (msg != null ? ': ' + msg : '')
+      + '\n' + getStackTrace());
     return false;
   }
 
   /**
    * Asserts that the specified condition is `false`.
    */
+  public Boolean isFalse(Boolean condition) {
+    return isFalse(condition, null);
+  }
+
+  /**
+   * Asserts that the specified condition is `false`.
+   */
   public Boolean isFalse(Boolean condition, String msg) {
-    return condition != false
-      ? fail(ASSERTION_FAILED + ': ' + msg)
-      : true;
+    return condition == false ||
+      fail(ASSERTION_FAILED + ': ' + msg);
+  }
+
+  /**
+   * Asserts that the value isn’t null.
+   */
+  public Boolean isNotNull(Object value) {
+    return isNotNull(value, null);
   }
 
   /**
    * Asserts that the value isn’t null.
    */
   public Boolean isNotNull(Object value, String msg) {
-    return value == null
-      ? fail(ASSERTION_FAILED + ': Instance expected to be a non null value: ' + msg)
-      : true;
+    return value != null ||
+      fail(ASSERTION_FAILED + ': Instance expected to be a non null value: ' + msg);
+  }
+
+  /**
+   * Asserts that the value is null.
+   */
+  public Boolean isNull(Object value) {
+    return isNull(value, null);
   }
 
   /**
    * Asserts that the value is null.
    */
   public Boolean isNull(Object value, String msg) {
-    return value != null
-      ? fail(ASSERTION_FAILED + ': Nullable object asserted with non null value: ' + msg)
-      : true;
+    return value == null ||
+      fail(ASSERTION_FAILED + ': Nullable object asserted with non null value: ' + msg);
+  }
+
+  /**
+   * Asserts that the specified condition is `true`.
+   */
+  public Boolean isTrue(Boolean condition) {
+    return isTrue(condition, null);
   }
 
   /**
    * Asserts that the specified condition is `true`.
    */
   public Boolean isTrue(Boolean condition, String msg) {
-    return condition != true
-      ? fail(ASSERTION_FAILED + ': ' + msg)
-      : true;
+    return condition == true ||
+      fail(ASSERTION_FAILED + (msg != null ? ': ' + msg : ''));
   }
 
   // =========================
@@ -102,7 +151,7 @@ public class SoftAssert {
    * @param condition Specifies the condition to test.
    */
   public Boolean assert(Boolean condition) {
-    return assertInternal(condition, ASSERTION_FAILED);
+    return isTrue(condition);
   }
 
   /**
@@ -112,7 +161,7 @@ public class SoftAssert {
    * @param msg       Custom message returned as part of the error message.
    */
   public Boolean assert(Boolean condition, String msg) {
-    return assertInternal(condition, msg);
+    return isTrue(condition, msg);
   }
 
   /**
@@ -122,17 +171,7 @@ public class SoftAssert {
    * @param actual   Specifies the actual value.
    */
   public Boolean assertEquals(Object expected, Object actual) {
-    Boolean areEqual = compareObjects(expected, actual);
-    if (!areEqual) {
-      return assertInternal(false, ASSERTION_FAILED + ': '
-        + String.format('Expected: {0}, Actual: {1}',
-          new String[]{
-            String.valueOf(expected),
-            String.valueOf(actual)
-          })
-        );
-    }
-    return areEqual;
+    return areEqual(expected, actual);
   }
 
   /**
@@ -143,18 +182,7 @@ public class SoftAssert {
    * @param msg      Custom message returned as part of the error message.
    */
   public Boolean assertEquals(Object expected, Object actual, String msg) {
-    Boolean areEqual = compareObjects(expected, actual);
-    if (!areEqual) {
-      return assertInternal(false, ASSERTION_FAILED + ': '
-        + (msg != null ? String.valueOf(msg) + ': ' : '')
-        + String.format('Expected: {0}, Actual: {1}',
-          new String[]{
-            String.valueOf(expected),
-            String.valueOf(actual)
-          })
-        );
-    }
-    return areEqual;
+    return areEqual(expected, actual, msg);
   }
 
   /**
@@ -164,13 +192,7 @@ public class SoftAssert {
    * @param actual   Specifies the actual value.
    */
   public Boolean assertNotEquals(Object expected, Object actual) {
-    Boolean areEqual = compareObjects(expected, actual);
-    if (areEqual) {
-      return assertInternal(false, ASSERTION_FAILED + ': '
-        + 'Same value: ' + String.valueOf(expected)
-        );
-    }
-    return !areEqual;
+    return areNotEqual(expected, actual);
   }
 
   /**
@@ -181,26 +203,16 @@ public class SoftAssert {
    * @param msg      Custom message returned as part of the error message.
    */
   public Boolean assertNotEquals(Object expected, Object actual, String msg) {
-    Boolean areEqual = compareObjects(expected, actual);
-    if (areEqual) {
-      return assertInternal(false, ASSERTION_FAILED + ': '
-        + (msg != null ? String.valueOf(msg) + ': ' : '')
-        + 'Same value: ' + String.valueOf(expected)
-        );
-    }
-    return !areEqual;
+    return areNotEqual(expected, actual, msg);
   }
 
-  private Boolean assertInternal(Boolean condition, String msg) {
-    if (!condition) {
-      if (msg == null) {
-        msg = ASSERTION_FAILED;
-      }
-      failures.add(String.valueOf(msg) + '\n' + getStackTrace());
-    }
-    return condition;
-  }
-
+  /**
+   * Compare two objects, the way that Salesforce would compare them
+   * if calling `Assert.areEqual()`.
+   * Otherwise, comparing two objects that happen to be strings would
+   * result in a case-insensitive comparison, which is not the way
+   * Salesforce assertion behaves.
+   */
   private Boolean compareObjects(Object expected, Object actual) {
     if (expected == null && actual == null) { return true; }
     if (expected == null || actual == null) { return false; }
@@ -213,9 +225,19 @@ public class SoftAssert {
     return expected.equals(actual);
   }
 
+  /**
+   * Will cause an exception to be thrown if at least one assertion failed.
+   */
   public void assertAll() {
+    all();
+  }
+
+  /**
+   * Will cause an exception to be thrown if at least one assertion failed.
+   */
+  public void all() {
     if (!failures.isEmpty()) {
-      System.assert(false,
+      System.Assert.fail(
         failures.size() + ' assertions failed:\n\n'
         + String.join(failures, '\n\n')
       );
