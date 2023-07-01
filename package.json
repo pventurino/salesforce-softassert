@@ -1,0 +1,38 @@
+{
+  "name": "salesforce-softassert",
+  "version": "0.0.0",
+  "description": "SoftAssert library for Salesforce Apex",
+  "main": "null",
+  "scripts": {
+    "test": "sfdx apex test run -y",
+    "prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
+    "prettier:verify": "prettier --list-different \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pventurino/salesforce-softassert.git"
+  },
+  "keywords": [
+    "salesforce",
+    "apex",
+    "softassert",
+    "test"
+  ],
+  "author": "Pablo Venturino",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pventurino/salesforce-softassert/issues"
+  },
+  "homepage": "https://github.com/pventurino/salesforce-softassert#readme",
+  "devDependencies": {
+    "@prettier/plugin-xml": "^2.2.0",
+    "lint-staged": "^13.2.3",
+    "prettier": "^2.8.8",
+    "prettier-plugin-apex": "^1.13.0"
+  },
+  "lint-staged": {
+    "**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}": [
+      "prettier --write --print-width 120"
+    ]
+  }
+}
