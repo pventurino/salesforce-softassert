@@ -109,20 +109,20 @@ public class SoftAssertTest {
     Integer line = FIRST_LINE; 
     String[] expected = new String[]{
       '14 failures',
-      '1. Expected: 1, Actual: 2 [' + (line++) + ':1]',
-      '2. message: Expected: 1, Actual: 2 [' + (line++) + ':1]',
-      '3. Same value: 1 [' + (line++) + ':1]',
-      '4. message: Same value: 1 [' + (line++) + ':1]',
-      '5. Assertion Failed [' + (line++) + ':1]',
-      '6. message [' + (line++) + ':1]',
-      '7. Value is not False [' + (line++) + ':1]',
-      '8. Value is not False: message [' + (line++) + ':1]',
-      '9. Instance expected to be a non null value [' + (line++) + ':1]',
-      '10. Instance expected to be a non null value: message [' + (line++) + ':1]',
-      '11. Nullable object asserted with non null value [' + (line++) + ':1]',
-      '12. Nullable object asserted with non null value: message [' + (line++) + ':1]',
-      '13. Value is not True [' + (line++) + ':1]',
-      '14. Value is not True: message [' + (line++) + ':1]'
+      '1. Expected: 1, Actual: 2 (' + (line++) + ':1)',
+      '2. message: Expected: 1, Actual: 2 (' + (line++) + ':1)',
+      '3. Same value: 1 (' + (line++) + ':1)',
+      '4. message: Same value: 1 (' + (line++) + ':1)',
+      '5. Assertion Failed (' + (line++) + ':1)',
+      '6. message (' + (line++) + ':1)',
+      '7. Value is not False (' + (line++) + ':1)',
+      '8. Value is not False: message (' + (line++) + ':1)',
+      '9. Instance expected to be a non null value (' + (line++) + ':1)',
+      '10. Instance expected to be a non null value: message (' + (line++) + ':1)',
+      '11. Nullable object asserted with non null value (' + (line++) + ':1)',
+      '12. Nullable object asserted with non null value: message (' + (line++) + ':1)',
+      '13. Value is not True (' + (line++) + ':1)',
+      '14. Value is not True: message (' + (line++) + ':1)'
     };
     String[] actual = assert.getFailureMessage().split('\n');
     for(Integer i=0; i<expected.size(); i++) {

@@ -20,10 +20,12 @@ public class SoftAssert {
     return INSTANCE;
   }
 
-  private final String ASSERTION_FAILED = 'Assertion Failed';
-
   // Contains all assertions that failed so far
-  private List<String> failures = new List<String>();
+  private class Failure {
+    String message;
+    String stackTrace;
+  }
+  private List<Failure> failures = new List<Failure>();
 
   // =====================
   // SYSTEM.ASSERT METHODS
@@ -41,9 +43,8 @@ public class SoftAssert {
    */
   public Boolean areEqual(Object expected, Object actual, String msg) {
     return compareObjects(expected, actual) == true ||
-      fail(ASSERTION_FAILED
-        + (msg != null ? ': ' + msg : '')
-        + ': Expected: ' + expected
+      fail((msg != null ? msg + ': ': '')
+        + 'Expected: ' + expected
         + ', Actual: ' + actual);
   }
 
@@ -59,9 +60,8 @@ public class SoftAssert {
    */
   public Boolean areNotEqual(Object expected, Object actual, String msg) {
     return compareObjects(expected, actual) == false ||
-      fail(ASSERTION_FAILED
-        + (msg != null ? ': ' + msg : '')
-        + ': Same value: ' + actual);
+      fail((msg != null ? msg + ': ' : '')
+        + 'Same value: ' + actual);
   }
 
   /**
@@ -75,9 +75,10 @@ public class SoftAssert {
    * Adds the specified message as a failure to the list.
    */
   public Boolean fail(String msg) {
-    failures.add(ASSERTION_FAILED
-      + (msg != null ? ': ' + msg : '')
-      + '\n' + getStackTrace());
+    Failure f = new Failure();
+    f.message = (msg != null ? msg : 'Assertion Failed');
+    f.stackTrace = getStackTrace();
+    failures.add(f);
     return false;
   }
 
@@ -93,7 +94,7 @@ public class SoftAssert {
    */
   public Boolean isFalse(Boolean condition, String msg) {
     return condition == false ||
-      fail(ASSERTION_FAILED + ': ' + msg);
+      fail('Value is not False' + (msg != null ? ': ' + msg : ''));
   }
 
   /**
@@ -108,7 +109,8 @@ public class SoftAssert {
    */
   public Boolean isNotNull(Object value, String msg) {
     return value != null ||
-      fail(ASSERTION_FAILED + ': Instance expected to be a non null value: ' + msg);
+      fail('Instance expected to be a non null value'
+        + (msg != null ? ': ' + msg : ''));
   }
 
   /**
@@ -123,7 +125,8 @@ public class SoftAssert {
    */
   public Boolean isNull(Object value, String msg) {
     return value == null ||
-      fail(ASSERTION_FAILED + ': Nullable object asserted with non null value: ' + msg);
+      fail('Nullable object asserted with non null value'
+        + (msg != null ? ': ' + msg : ''));
   }
 
   /**
@@ -138,7 +141,7 @@ public class SoftAssert {
    */
   public Boolean isTrue(Boolean condition, String msg) {
     return condition == true ||
-      fail(ASSERTION_FAILED + (msg != null ? ': ' + msg : ''));
+      fail('Value is not True' + (msg != null ? ': ' + msg : ''));
   }
 
   // =========================
@@ -236,12 +239,27 @@ public class SoftAssert {
    * Will cause an exception to be thrown if at least one assertion failed.
    */
   public void all() {
-    if (!failures.isEmpty()) {
-      System.Assert.fail(
-        failures.size() + ' assertions failed:\n\n'
-        + String.join(failures, '\n\n')
-      );
+    String msg = getFailureMessage();
+    if (msg != null) {
+      System.assert(false, msg);
+      // Using `System.assert(false, msg)` because message is shorter than
+      // `Assert.fail(msg)` (which repeats the 'Assertion Failed: ' string)
     }
+  }
+
+  /**
+   * Returns exception message that would be thrown by calling `all()`
+   */
+  public String getFailureMessage() {
+    if (!failures.isEmpty()) {
+      List<String> out = new List<String>{failures.size() + ' failures'};
+      Integer i = 0;
+      for (Failure f : failures) {
+        out.add((++i) + '. ' + f.message + getLocation(f.stackTrace));
+      }
+      return String.join(out, '\n');
+    }
+    return null;
   }
 
   /**
@@ -252,6 +270,19 @@ public class SoftAssert {
     Exception ex = new DummyException();
     return ex.getStackTraceString()
       .replaceFirst('^(Class\\.SoftAssert\\..*\n)+', '');
+  }
+
+  /**
+   * Formats the stack trace before output. 
+   */
+  private String getLocation(String stackTrace) {
+    // TODO: Make this a strategy pattern with different outputs
+    // For now, output is outermost "[{ln}:{col}]" with no line break
+    return ' (' + stackTrace
+      .substringAfterLast(': ')
+      .replaceAll('[^0-9,]','')
+      .replace(',', ':')
+      + ')';
   }
 
   /**
