@@ -23,7 +23,7 @@ public class SoftAssert {
   // Contains all assertions that failed so far
   private class Failure {
     String message;
-    String stackTrace;
+    String stackTraceString;
   }
   private List<Failure> failures = new List<Failure>();
 
@@ -77,7 +77,7 @@ public class SoftAssert {
   public Boolean fail(String msg) {
     Failure f = new Failure();
     f.message = (msg != null ? msg : 'Assertion Failed');
-    f.stackTrace = getStackTrace();
+    f.stackTraceString = getStackTraceString();
     failures.add(f);
     return false;
   }
@@ -255,7 +255,7 @@ public class SoftAssert {
       List<String> out = new List<String>{failures.size() + ' failures'};
       Integer i = 0;
       for (Failure f : failures) {
-        out.add((++i) + '. ' + f.message + getLocation(f.stackTrace));
+        out.add((++i) + '. ' + f.message + getLocation(f.stackTraceString));
       }
       return String.join(out, '\n');
     }
@@ -266,7 +266,7 @@ public class SoftAssert {
    * Returns the stack trace up to calling the assertion method.
    * @return a string containing each call on the stack trace in a separate line.
    */
-  private String getStackTrace() {
+  private String getStackTraceString() {
     Exception ex = new DummyException();
     return ex.getStackTraceString()
       .replaceFirst('^(Class\\.SoftAssert\\..*\n)+', '');
@@ -275,10 +275,10 @@ public class SoftAssert {
   /**
    * Formats the stack trace before output. 
    */
-  private String getLocation(String stackTrace) {
+  private String getLocation(String stackTraceString) {
     // TODO: Make this a strategy pattern with different outputs
     // For now, output is outermost "[{ln}:{col}]" with no line break
-    return ' (' + stackTrace
+    return ' (' + stackTraceString
       .substringAfterLast(': ')
       .replaceAll('[^0-9,]','')
       .replace(',', ':')

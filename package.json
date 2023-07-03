@@ -1,8 +1,7 @@
 {
   "name": "salesforce-softassert",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "SoftAssert library for Salesforce Apex",
-  "main": "null",
   "scripts": {
     "test": "sfdx apex test run -y",
     "prettier": "prettier --write \"**/*.{cls,cmp,component,css,html,js,json,md,page,trigger,xml,yaml,yml}\"",
