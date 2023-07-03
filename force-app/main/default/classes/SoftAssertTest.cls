@@ -134,11 +134,11 @@ public class SoftAssertTest {
   // Assert
   //-------
 
-  @isTest static void assert_true() {
+  @isTest static void assertTrue() {
     System.assertEquals(true, assert.assert(true));
   }
 
-  @isTest static void assert_false() {
+  @isTest static void assertFalse() {
     System.assertEquals(false, assert.assert(false));
   }
 
@@ -146,39 +146,39 @@ public class SoftAssertTest {
   // AssertEquals
   //-------------
 
-  @isTest static void null_equalsnull() {
+  @isTest static void nullEqualsNull() {
     System.assertEquals(true, assert.assertEquals(null, null));
   }
 
-  @isTest static void null_equalsstring() {
+  @isTest static void nullEqualsString() {
     System.assertEquals(false, assert.assertEquals(null, 'string'));
   }
 
-  @isTest static void integer_equalsinteger() {
+  @isTest static void integerEqualsInteger() {
     System.assertEquals(true, assert.assertEquals(1, 1));
   }
 
-  @isTest static void integer_equalsdecimal() {
+  @isTest static void integerEqualsDecimal() {
     System.assertEquals(true, assert.assertEquals(1, 1.0));
   }
 
-  @isTest static void decimal_equalsinteger() {
+  @isTest static void decimalEqualsInteger() {
     System.assertEquals(true, assert.assertEquals(1.0, 1));
   }
 
-  @isTest static void decimal_equalsdecimal() {
+  @isTest static void decimalEqualsDecimal() {
     System.assertEquals(true, assert.assertEquals(1.2, 1.20000));
   }
 
-  @isTest static void string_equalsnull() {
+  @isTest static void stringEqualsNull() {
     System.assertEquals(false, assert.assertEquals('string', null));
   }
 
-  @isTest static void string_equalsdifferentcase() {
+  @isTest static void stringEqualsDifferentCase() {
     System.assertEquals(false, assert.assertEquals('string', 'STRING'));
   }
 
-  @isTest static void string_equalssame() {
+  @isTest static void stringEqualsSameCase() {
     System.assertEquals(true, assert.assertEquals('string', 'string'));
   }
 
@@ -186,23 +186,23 @@ public class SoftAssertTest {
   // AssertNotEquals
   //----------------
 
-  @isTest static void null_notequalsnull() {
+  @isTest static void nullNotEqualsNull() {
     System.assertEquals(false, assert.assertNotEquals(null, null));
   }
 
-  @isTest static void null_notequalsstring() {
+  @isTest static void nullNotEqualsString() {
     System.assertEquals(true, assert.assertNotEquals(null, 'string'));
   }
 
-  @isTest static void string_notequalsnull() {
+  @isTest static void stringNotEqualsNull() {
     System.assertEquals(true, assert.assertNotEquals('string', null));
   }
 
-  @isTest static void string_notequalsdifferentcase() {
+  @isTest static void stringNotEqualsDifferentCase() {
     System.assertEquals(true, assert.assertNotEquals('string', 'STRING'));
   }
 
-  @isTest static void string_notequalssame() {
+  @isTest static void stringNotEqualsSame() {
     System.assertEquals(false, assert.assertNotEquals('string', 'string'));
   }
 
