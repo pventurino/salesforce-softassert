@@ -79,6 +79,7 @@ public class SoftAssert {
     f.message = (msg != null ? msg : 'Assertion Failed');
     f.stackTraceString = getStackTraceString();
     failures.add(f);
+    System.debug(LoggingLevel.ERROR, 'Assertion Failed: ' + msg);
     return false;
   }
 
